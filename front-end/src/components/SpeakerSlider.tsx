@@ -2,18 +2,37 @@
 
 import React from 'react';
 import * as RadixSlider from '@radix-ui/react-slider';
-import { Volume2 } from 'lucide-react';
+import { Volume2, VolumeX } from 'lucide-react';
 
-interface SliderProps extends RadixSlider.SliderProps {}
+interface SliderProps extends RadixSlider.SliderProps {
+    speakerIsMuted: boolean | undefined,
+    handleMuteSpeaker: () => void,
+}
 
-export function SpeakerSlider({...props}:SliderProps) {
+export function SpeakerSlider({handleMuteSpeaker, speakerIsMuted=false,...props}:SliderProps) {
 
     return (
         <div className='flex gap-2 items-center pl-1'>
-            <Volume2
-                 size={18}
-                 className="text-zinc-200"
-            />
+            <button
+                onClick={handleMuteSpeaker}
+            >
+                {
+                    speakerIsMuted ? (
+                        <VolumeX
+                        size={18}
+                        className="text-zinc-200"
+                        />
+                    )
+                    : (
+
+                        <Volume2
+                            size={18}
+                            className="text-zinc-200"
+                        />
+                    )
+                }
+
+            </button>
 
             <RadixSlider.Root
                 className="relative flex items-center select-none touch-none w-20 h-5 group"

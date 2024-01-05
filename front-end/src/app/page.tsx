@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { HomeIcon, Search, Library, ChevronLeft, ChevronRight, Play, Heart, Shuffle, SkipBack, SkipForward, Repeat } from "lucide-react"
+import { HomeIcon, Search, Library, ChevronLeft, ChevronRight, Play } from "lucide-react"
 import Image from "next/image";
-import { Slider } from "@/components/Slider";
 import { Footer } from "@/components/Footer";
 
 const userPlaylist = [
