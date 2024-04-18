@@ -16,10 +16,11 @@ import {
     SkipForward,
     TextQuote
 } from "lucide-react"
+import axios from "axios"
 import Image from "next/image"
 import { Slider } from "./Slider"
 import Link from "next/link"
-import { ComponentProps,  useRef, useState } from "react"
+import { ComponentProps, useCallback, useEffect, useRef, useState } from "react"
 import Audio from "@/assets/audio01.mp3"
 import Audio02 from "@/assets/audio02.mp3"
 import { SpeakerSlider } from "./SpeakerSlider"
@@ -32,11 +33,13 @@ interface AudioProps extends ComponentProps<"audio"> { }
 export function Footer() {
     const [musicPlayedTime, setMusicPlayedTime] = useState(0)
     const [musicVolume, setMusicVolume] = useState(1)
+    const [pipelineAudioFile, setPipelineAudioFile] = useState<any>(null);
     const [applicationSpeakerIsMuted, setApplicationSpeakerIsMuted] = useState(false)
     const [musiIsAlreadyPlaying, setMusicIsAlreadyPlaying] = useState(false)
     const [musicIntervalId, setMusicIntervalId] = useState<null | NodeJS.Timeout>(null)
-    console.log(musicVolume)
     const audioRef = useRef<HTMLAudioElement | null>(null)
+   
+    const [isFethingMusic, setIsFethingMusic] = useState(false)
 
     function timeFormater(time: number | undefined) {
         if (!time) return '0:00'
@@ -53,14 +56,64 @@ export function Footer() {
         clearInterval(musicIntervalId)
     }
 
-  
+    const fetchAudioStream = useCallback(async () => {
+        if(isFethingMusic) return
+        setIsFethingMusic(true)
+        try {
+            const response = await fetch("http://localhost:3333/audio-stream")
+            const streamReader = response.body?.getReader()
+            if (!streamReader) return
+            let audioContentExists = true
+            const arrayChunks: Blob[] = []
+            while (audioContentExists) {
+    
+                const { done, value } = await streamReader.read()
+    
+                if (done) break
+                const blob = new Blob([value])
+                arrayChunks.push(blob)
+    
+                if (!audioRef.current) return
+                
+                if(arrayChunks.length === 5){
+                  
+                    const concatenatedBlob = new Blob(arrayChunks)
+                    const audioUrl = URL.createObjectURL(concatenatedBlob);
+                    audioRef.current.src = audioUrl
+                   
+                    await startMusicPlayer()
+
+                }
+         
+            }
+           
+            if (!audioRef.current ) return
+            const oldTime =  audioRef.current.currentTime
+            const concatenatedBlob = new Blob(arrayChunks)
+            const audioUrl = URL.createObjectURL(concatenatedBlob);
+            
+            audioRef.current.src = audioUrl
+            await startMusicPlayer()
+            audioRef.current.currentTime = oldTime
+            
+        } catch (error) {
+          console.error(error)  
+        }
+        finally {
+            setIsFethingMusic(false)
+        }
+    }, [])
+
+
+   
+
 
     function handleVolumeChange(volumeList: number[]) {
         if (!audioRef.current?.volume) return
 
         const volume = volumeList[0]
         setMusicVolume(volume)
-        
+
         audioRef.current.muted = false
 
         if (volume <= 0) {
@@ -85,6 +138,7 @@ export function Footer() {
     }
 
     async function startMusicPlayer() {
+        if (!audioRef.current) return
         await audioRef.current?.play()
         startMusicCounter()
         setMusicIsAlreadyPlaying(true)
@@ -133,28 +187,30 @@ export function Footer() {
         startMusicPlayer()
     }
 
-    async function handleMuteApplicationSpeaker(){
-        if(!audioRef.current) return
-        if(audioRef.current.muted === true) {
+    async function handleMuteApplicationSpeaker() {
+        if (!audioRef.current) return
+        if (audioRef.current.muted === true) {
             handleVolumeChange([.5])
-             audioRef.current.muted = false
-             return
+            audioRef.current.muted = false
+            return
 
-         }
+        }
         handleVolumeChange([.1])
-        audioRef.current.muted = true 
+        audioRef.current.muted = true
 
     }
-    
 
 
     return (
         <footer className="bg-zinc-800 border-t-zinc-700 p-4 border-t items-center justify-between flex h-[15vh] ">
             <audio
                 onEnded={handleGoToNextMusic}
-                src={Audio}
+
                 ref={audioRef}
             />
+            <button onClick={fetchAudioStream}>
+                tocar
+            </button>
 
             <div className="flex items-center gap-2">
                 <Image
