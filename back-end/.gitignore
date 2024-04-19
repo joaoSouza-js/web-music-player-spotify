@@ -9,6 +9,7 @@
 # testing
 /coverage
 *.mp3
+mp3
 .mp3
 # next.js
 /.next/

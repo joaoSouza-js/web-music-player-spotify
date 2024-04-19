@@ -2,6 +2,7 @@ import Link from "next/link";
 import { HomeIcon, Search, Library, ChevronLeft, ChevronRight, Play } from "lucide-react"
 import Image from "next/image";
 import { Footer } from "@/components/Footer";
+import { MusicPlayButton } from "@/components/MusicPlayButton";
 
 const userPlaylist = [
   { id: "1", title: "Energetic Vibes" },
@@ -62,73 +63,32 @@ export default function Home() {
   const greetingMessage = handleGreetingMessage(dayHours)
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="flex flex-1">
-        <aside className="w-72 bg-zinc-950 p-6 overflow-auto h-[85vh]">
-          <nav className="space-y-5">
-            <Link
-              className="flex gap-3 items-center text-sm font-semibold text-zinc-200"
-              href={"*"}
-            >
-              <HomeIcon />Inicio
-            </Link>
-            <Link
-              className="flex gap-2 items-center text-sm font-semibold text-zinc-200"
-              href={"*"}
-            >
-              <Search />
-              Pesquisa
-            </Link>
-            <Link
-              className="flex gap-2 items-center text-sm font-semibold text-zinc-200"
-              href={"*"}
-            >
-              <Library />
-              Biblioteca
-            </Link>
 
-          </nav>
-          <nav className="mt-6 pt-6 border-t-zinc-800 border-t flex flex-col gap-3">
+    <div>
+      <main className="  ">
+        <div className="flex items-center gap-3 ">
+          <button className="p-1 rounded-full bg-black/40">
+            <ChevronLeft />
+          </button>
+          <button className="p-1 rounded-full bg-black/40">
+            <ChevronRight />
+          </button>
+        </div>
+        <section>
+
+
+          <h1 className="font-semibold mt-7 text-3xl">
+            {greetingMessage}
+          </h1>
+          <div className="grid grid-cols-3 gap-6 mt-4">
             {
-              userPlaylist.map(playList => (
-                <Link
-                  key={playList.id}
-                  className="text-sm text-zinc-400 hover:text-blue-50"
-                  href={"*"}
-                >
-                  {
-                    playList.title
-                  }
-                </Link>
-
-              ))
-            }
-
-
-          </nav>
-        </aside>
-        <main className="  flex-1 p-6 overflow-auto h-[85vh]">
-          <div className="flex items-center gap-3 ">
-            <button className="p-1 rounded-full bg-black/40">
-              <ChevronLeft />
-            </button>
-            <button className="p-1 rounded-full bg-black/40">
-              <ChevronRight />
-            </button>
-          </div>
-          <section>
-
-
-            <h1 className="font-semibold mt-7 text-3xl">
-              {greetingMessage}
-            </h1>
-            <div className="grid grid-cols-3 gap-6 mt-4">
-              {
-                recommendedPlaylists.map(recommendedPlaylist => (
+              recommendedPlaylists.map(recommendedPlaylist => (
+                <div className="flex items-center justify-center bg-white/5 rounded group overflow-hidden hover:bg-white/15 transition-colors pr-3">
                   <Link
-                    href={"*"}
+                    href={"/playList/teste"}
                     key={recommendedPlaylist.id}
-                    className="bg-white/5 rounded group  flex overflow-hidden gap-3  items-center hover:bg-white/15 transition-colors pr-3"
+                
+                    className="rounded group relative  flex overflow-hidden gap-3  items-center "
                   >
                     <Image
                       alt="capa do album hero and vilans do artista metro bomming"
@@ -138,65 +98,64 @@ export default function Home() {
                     />
 
                     <strong className="font-semibold ">{recommendedPlaylist.title}</strong>
+
+
+
+                  </Link>
+                  <MusicPlayButton musicId="ddsodj" />
+
+                </div>
+              ))
+            }
+          </div>
+        </section>
+        <section>
+          <h1 className="font-semibold mt-7 text-2xl">
+            Feito para João Souza
+          </h1>
+          <div className="flex  flex-wrap mt-4 gap-4">
+            {
+              playsRecommendForUser.map(recommendedPlaylist => (
+                <Link
+                  href={"*"}
+                  key={recommendedPlaylist.id}
+
+                  className="bg-white/5 rounded group  w-48  p-3 flex flex-col overflow-hidden gap-3  items-center hover:bg-white/15 transition-colors pr-3"
+                >
+                  <div className="relative h-[160px]">
+                    <Image
+                      alt="capa do album hero and vilans do artista metro bomming"
+                      src={recommendedPlaylist.cover}
+                      width={200}
+
+                      height={140}
+                      className="h-full  "
+                    />
                     <button
-                      className="bg-green-500 h-12 w-12 items-center justify-center pl-1  flex rounded-full text-black ml-auto invisible group-hover:visible transition-all"
+                      className="bg-green-500 absolute right-3 bottom-3 h-12 w-12 items-center justify-center pl-1  flex rounded-full text-black ml-auto invisible group-hover:visible transition-all"
                     >
                       <Play fill='bg-black' size={20} />
                     </button>
+                  </div>
 
-                  </Link>
-                ))
-              }
-            </div>
-          </section>
-          <section>
-            <h1 className="font-semibold mt-7 text-2xl">
-              Feito para João Souza
-            </h1>
-            <div className="flex  flex-wrap mt-4 gap-4">
-              {
-                playsRecommendForUser.map(recommendedPlaylist => (
-                  <Link
-                    href={"*"}
-                    key={recommendedPlaylist.id}
+                  <div className="space-y-1">
+                    <strong className="font-semibold  ">{recommendedPlaylist.title}</strong>
+                    <span className="text-zinc-400 inline-block text-xs">
+                      {
+                        shortDescription(recommendedPlaylist.description)
+                      }
+                    </span>
 
-                    className="bg-white/5 rounded group  w-48  p-3 flex flex-col overflow-hidden gap-3  items-center hover:bg-white/15 transition-colors pr-3"
-                  >
-                    <div className="relative h-[160px]">
-                      <Image
-                        alt="capa do album hero and vilans do artista metro bomming"
-                        src={recommendedPlaylist.cover}
-                        width={200}
+                  </div>
+                </Link>
+              ))
+            }
+          </div>
+        </section>
+      </main>
 
-                        height={140}
-                        className="h-full  "
-                      />
-                      <button
-                        className="bg-green-500 absolute right-3 bottom-3 h-12 w-12 items-center justify-center pl-1  flex rounded-full text-black ml-auto invisible group-hover:visible transition-all"
-                      >
-                        <Play fill='bg-black' size={20} />
-                      </button>
-                    </div>
-
-                    <div className="space-y-1">
-                      <strong className="font-semibold  ">{recommendedPlaylist.title}</strong>
-                      <span className="text-zinc-400 inline-block text-xs">
-                        {
-                          shortDescription(recommendedPlaylist.description)
-                        }
-                      </span>
-
-                    </div>
-                  </Link>
-                ))
-              }
-            </div>
-          </section>
-        </main>
-
-      </div>
-      <Footer/>
-      
     </div>
+
+
   )
 }
