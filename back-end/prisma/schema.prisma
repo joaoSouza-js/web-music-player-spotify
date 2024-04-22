@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Artist {
+  id       String  @id @default(uuid())
+  email    String  @unique
+  name     String? @unique
+  password String
+  photo    String?
+  music    Music[] // An artist can have multiple music tracks
+  albums   Album[] // An artist can have multiple albums
+}
+
+model Music {
+  id          String     @id @default(uuid())
+  name        String
+  photo       String?
+  description String?
+  url         String
+  artists     Artist[] // A music track can have multiple artists
+  album       Album?     @relation(fields: [albumId], references: [id])
+  albumId     String?
+  playlists   PlayList[]
+}
+
+model Album {
+  id          String   @id @default(uuid())
+  name        String
+  photo       String?
+  description String?
+  musics      Music[] // An album can have multiple music tracks
+  artists     Artist[] // An album can have multiple artists
+}
+
+model PlayList {
+  id          String  @id @default(uuid())
+  name        String
+  photo       String?
+  description String?
+  musics      Music[] // A playlist can contain multiple music tracks
+}
