@@ -1,6 +1,6 @@
 # web  music player 
 
-uma  "clone" de interface  e principais funcionalidade do  spotify
+uma  "clone" da interface e principais funcionalidade do  spotify
 
 ![image](https://github.com/joaoSouza-js/web-music-player-spotify/assets/84108989/460b4b0e-3e20-46e4-9b25-3c7cc86ae732)
 
