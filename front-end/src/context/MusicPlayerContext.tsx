@@ -8,13 +8,14 @@ export type MusicPlayerContextProps = {
     musicIsAlreadyPlaying: boolean,
     isFetchingMusic: boolean,
     audioRef: React.MutableRefObject<HTMLAudioElement | null>,
-    fetchAudioStream: () => Promise<void>,
-
+    fetchSingleSong: (music: MUSIC_DTO) => Promise<void>,
+    currentMusic: MUSIC_DTO | null,
     handleMusicPlayerState: () => void,
     handleReturnToPlayMusic: (time: number[]) => void,
     handleMusicTimeChange: (time: number[]) => void,
     handleGoToNextMusic: () => Promise<void>,
     handleGoToPreviousMusic: () => Promise<void>,
+    fetchQueueSongs: (musics: MUSIC_DTO[], musicId?: string) => Promise<void>,
 }
 type MusicPlayerContextProviderProps = {
     children: ReactNode
@@ -22,12 +23,14 @@ type MusicPlayerContextProviderProps = {
 export const MusicPlayerContext = createContext({} as MusicPlayerContextProps)
 
 export function MusicPlayerContextProvider({ children }: MusicPlayerContextProviderProps) {
-     
+
     const [musicPlayedTime, setMusicPlayedTime] = useState(0)
     const [musicVolume, setMusicVolume] = useState(1)
+    const [musicQueue, setMusicQueue] = useState<MUSIC_DTO[] | null>([])
     const [musicIsAlreadyPlaying, setMusicIsAlreadyPlaying] = useState(false)
     const [musicIntervalId, setMusicIntervalId] = useState<null | NodeJS.Timeout>(null)
     const [isFetchingMusic, setIsFetchingMusic] = useState(false)
+    const [currentMusic, setCurrentMusic] = useState<null | MUSIC_DTO>(null)
 
     const audioRef = useRef<HTMLAudioElement | null>(null)
 
@@ -38,15 +41,22 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
         clearInterval(musicIntervalId)
     }
 
-    const fetchAudioStream = useCallback(async () => {
+    const fetchSingleSong = useCallback(async (music: MUSIC_DTO) => {
         if (isFetchingMusic) return
         setIsFetchingMusic(true)
+        if (!audioRef.current) return
+
         try {
-            const response = await fetch("http://localhost:3333/audio-stream")
-            const streamReader = response.body?.getReader()
+
+            const audioResponse = await fetch(music.url)
+            const streamReader = audioResponse.body?.getReader()
+
             if (!streamReader) return
+
             let audioContentExists = true
             const arrayChunks: Blob[] = []
+
+            audioRef.current.currentTime = 0
             while (audioContentExists) {
 
                 const { done, value } = await streamReader.read()
@@ -55,9 +65,7 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
                 const blob = new Blob([value])
                 arrayChunks.push(blob)
 
-                if (!audioRef.current) return
-
-                if (arrayChunks.length === 5) {
+                if (arrayChunks.length === 12) {
 
                     const concatenatedBlob = new Blob(arrayChunks)
                     const audioUrl = URL.createObjectURL(concatenatedBlob);
@@ -68,15 +76,18 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
                 }
 
             }
+            console.log("audio chunks", arrayChunks)
 
-            if (!audioRef.current) return
             const oldTime = audioRef.current.currentTime
             const concatenatedBlob = new Blob(arrayChunks)
             const audioUrl = URL.createObjectURL(concatenatedBlob);
 
             audioRef.current.src = audioUrl
-            await startMusicPlayer()
             audioRef.current.currentTime = oldTime
+            await startMusicPlayer()
+            setCurrentMusic(music)
+
+
 
         } catch (error) {
             console.error(error)
@@ -86,7 +97,15 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
         }
     }, [])
 
-  
+    const fetchQueueSongs = useCallback(async (musics: MUSIC_DTO[], musicId?: string) => {
+        setMusicQueue(musics)
+        const music = musics.find(music => music.id === musicId)
+        await fetchSingleSong(music?.id ? music : musics[0])
+    }, [])
+
+
+
+
     function startMusicCounter() {
         const intervalId = setInterval(() => {
             if (!audioRef.current?.currentTime) return
@@ -136,17 +155,36 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
 
     }
 
+
     async function handleGoToNextMusic() {
         if (!audioRef.current) return
-        audioRef.current.src = Audio02
-        startMusicPlayer()
+        if (!musicQueue || !musicQueue.length) return
+
+        const currentMusicIndex = musicQueue.findIndex(music => music.id === currentMusic?.id)
+
+        const isLastMusic = currentMusicIndex === musicQueue.length - 1
+        const songToFetch = isLastMusic ? musicQueue[0] : musicQueue[currentMusicIndex + 1]
+        fetchSingleSong(songToFetch)
+
     }
 
     async function handleGoToPreviousMusic() {
         if (!audioRef.current) return
-        audioRef.current.src = Audio
-        startMusicPlayer()
+        if (!musicQueue || !musicQueue.length) return
+        const currentMusicIndex = musicQueue.findIndex(music => music.id === currentMusic?.id)
+
+        const isFirstMusic = currentMusicIndex === 0
+
+        if (isFirstMusic) {
+            audioRef.current.currentTime = 0
+            return
+        }
+        const songToFetch = musicQueue[currentMusicIndex - 1]
+        fetchSingleSong(songToFetch)
+
     }
+
+
 
 
 
@@ -154,15 +192,17 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
     return (
         <MusicPlayerContext.Provider value={{
             audioRef,
+            fetchQueueSongs,
             handleGoToNextMusic,
             handleGoToPreviousMusic,
             handleMusicPlayerState,
             handleMusicTimeChange,
-            fetchAudioStream,
+            fetchSingleSong,
+            currentMusic,
             musicIsAlreadyPlaying,
             musicPlayedTime,
             isFetchingMusic: isFetchingMusic,
-           
+
             handleReturnToPlayMusic,
         }}>
             {children}

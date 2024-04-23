@@ -27,7 +27,7 @@ const getMusicSuccessResponse = z.object({
 
 export async function getMusic(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().get(
-        "/api/music/:id",
+        "/api/musics/:id",
         {
             schema: {
                 summary: "Get music",

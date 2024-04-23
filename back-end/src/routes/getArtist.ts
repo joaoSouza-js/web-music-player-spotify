@@ -39,7 +39,7 @@ const getArtistSuccessResponse = z.object({
 
 export async function getArtist(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().get(
-        "/api/artist/:id",
+        "/api/artists/:id",
         { schema: 
                 { 
                     summary: "Get artist",

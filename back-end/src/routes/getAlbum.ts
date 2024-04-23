@@ -14,6 +14,7 @@ const artistSchema = z.object({
 });
 
 const musicSchema = z.object({
+    id: z.string().uuid(),
     name: z.string(),
     photo: z.string().url(),
     artists: z.array(artistSchema),
@@ -34,7 +35,7 @@ const getAlbumSuccessResponse = z.object({
 
  export async function getAlbum(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().get(
-        "/api/album/:id",
+        "/api/albums/:id",
         {
             schema: {
                 summary: "Get album",
@@ -58,6 +59,7 @@ const getAlbumSuccessResponse = z.object({
                     musics: {
                         select: {
                             name: true,
+                            id: true,
                             artists: {
                                 select: {
                                     name: true,

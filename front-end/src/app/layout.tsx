@@ -29,7 +29,7 @@ export default function RootLayout({
           <div className="h-screen flex flex-col">
             <div className="flex flex-1">
               <Aside />
-              <div className='flex-1 p-6 overflow-auto h-[85vh]'>
+              <div className='flex-1  overflow-auto h-[85vh]'>
                 {children}
 
               </div>

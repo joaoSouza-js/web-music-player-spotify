@@ -1,26 +1,30 @@
 "use client"
 
 import { useMusicPlayer } from "@/hooks/useMusicPlayer"
+import { api } from "@/service/axios"
 import { Play } from "lucide-react"
 import { ComponentProps, forwardRef } from "react"
 
-type MusicPlayButtonProps = ComponentProps<"button"> & {
-    music: MUSIC_DTO,
-    playlistId?: string
-    hasHidden?: boolean,
-    musicQueue?: MUSIC_DTO[]
+
+type AlbumResponse = {
+    album: ALBUM_DTO
 }
 
-export const MusicPlayButton = forwardRef<HTMLButtonElement, MusicPlayButtonProps>((props, ref) => {
-    const {music, playlistId,musicQueue, hasHidden=true} = props
-    const {fetchSingleSong,fetchQueueSongs} = useMusicPlayer()
+type MusicPlayButtonProps = ComponentProps<"button"> & {
+    albumId: string
+    hasHidden?: boolean,
+}
+
+export const MusicPlayerAlbum = forwardRef<HTMLButtonElement, MusicPlayButtonProps>((props, ref) => {
+    const {albumId, hasHidden=true} = props
+    const {fetchQueueSongs} = useMusicPlayer()
     
     async function handleFetchAudioStream() {
-        if(!musicQueue){
-            await fetchSingleSong(music)
-            return
-        }
-        await fetchQueueSongs(musicQueue,music.id)
+        const albumResponse = await api.get<AlbumResponse>(`albums/${albumId}`)
+        const { album } = albumResponse.data
+        const { musics } = album
+
+        await fetchQueueSongs(musics)
     }
     return (
         <button
