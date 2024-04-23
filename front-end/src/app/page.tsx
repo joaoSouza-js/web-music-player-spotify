@@ -1,10 +1,11 @@
 import Link from "next/link";
-import {  ChevronLeft, ChevronRight, Play } from "lucide-react"
+import { ChevronLeft, ChevronRight, Play } from "lucide-react"
 import Image from "next/image";
 import { handleGreetingMessage } from "@/utils/greetingMessage";
 import { shortDescription } from "@/utils/shortDescription";
 import { api } from "@/service/axios";
 import { MusicPlayerAlbum } from "@/components/MusicPlayerAlbum";
+import { HeaderNavigation } from "@/components/HeaderNavigation";
 
 type albumnsResponse = {
   albums: ALBUM_DTO[]
@@ -37,14 +38,7 @@ export default async function Home() {
     <div>
 
       <main className=" p-6 ">
-        <div className="flex items-center gap-3 ">
-          <button className="p-1 rounded-full bg-black/40">
-            <ChevronLeft />
-          </button>
-          <button className="p-1 rounded-full bg-black/40">
-            <ChevronRight />
-          </button>
-        </div>
+        <HeaderNavigation />
         <section>
 
 

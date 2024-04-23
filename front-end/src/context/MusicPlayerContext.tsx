@@ -1,8 +1,9 @@
 'use client'
 
-import { ReactElement, ReactNode, createContext, useCallback, useContext, useRef, useState } from "react"
-import Audio from "@/assets/audio01.mp3"
-import Audio02 from "@/assets/audio02.mp3"
+import {ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from "react"
+
+import { getLastMusicInformation } from "@/Storage/UserLastMusic/GetLastMusicInformation"
+import { saveLastMusicInformation } from "@/Storage/UserLastMusic/saveLastMusicInformation"
 export type MusicPlayerContextProps = {
     musicPlayedTime: number,
     musicIsAlreadyPlaying: boolean,
@@ -101,6 +102,7 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
         setMusicQueue(musics)
         const music = musics.find(music => music.id === musicId)
         await fetchSingleSong(music?.id ? music : musics[0])
+    
     }, [])
 
 
@@ -166,6 +168,7 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
         const songToFetch = isLastMusic ? musicQueue[0] : musicQueue[currentMusicIndex + 1]
         fetchSingleSong(songToFetch)
 
+
     }
 
     async function handleGoToPreviousMusic() {
@@ -182,12 +185,31 @@ export function MusicPlayerContextProvider({ children }: MusicPlayerContextProvi
         const songToFetch = musicQueue[currentMusicIndex - 1]
         fetchSingleSong(songToFetch)
 
+
     }
 
+    async function fetchLastMusicSavedInStorage(){
+        const {lastMusic,lastMusicQueue} = getLastMusicInformation()
+        if(!lastMusic || !lastMusicQueue) return
+        await fetchQueueSongs(lastMusicQueue,lastMusic.id)
+        
+        if(!audioRef.current)return
 
+    }
 
+    useEffect(() => {
+        fetchLastMusicSavedInStorage()
+        
+    },[])
 
-
+    useEffect(() => {
+        if(currentMusic === null || musicQueue === null) return
+        
+        saveLastMusicInformation({
+            music: currentMusic ,
+            musicQueue: musicQueue
+        })
+    }, [musicQueue])
 
     return (
         <MusicPlayerContext.Provider value={{

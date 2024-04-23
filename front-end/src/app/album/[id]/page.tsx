@@ -1,4 +1,5 @@
 
+import { HeaderNavigation } from "@/components/HeaderNavigation"
 import { MusicPlayButton } from "@/components/MusicPlayButton"
 import { ListPlayMusicButton } from "@/components/MusicPlayerListButton"
 import { api } from "@/service/axios"
@@ -26,14 +27,7 @@ export default async function Album({ params }: AlbumPageProps) {
     return (
         <div className={` bg-gradient-to-b h-full from-blue-600 pt-6   rounded-xl m-2 flex flex-col`} >
             <div className="px-6">
-                <div className="flex items-center gap-3 ">
-                    <button className="p-1 rounded-full bg-black/40">
-                        <ChevronLeft />
-                    </button>
-                    <button className="p-1 rounded-full bg-black/40">
-                        <ChevronRight />
-                    </button>
-                </div>
+               <HeaderNavigation/>
                 <section className="mt-6 flex items-end gap-4">
                     <Image
                         alt="capa do album hero and vilans do artista metro bomming"
