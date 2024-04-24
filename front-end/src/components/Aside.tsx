@@ -19,13 +19,13 @@ export function Aside(){
         <nav className="space-y-5">
           <Link
             className="flex gap-3 items-center text-sm font-semibold text-zinc-200"
-            href={"*"}
+            href={"/"}
           >
             <HomeIcon />Inicio
           </Link>
           <Link
             className="flex gap-2 items-center text-sm font-semibold text-zinc-200"
-            href={"*"}
+            href={"/search"}
           >
             <Search />
             Pesquisa
