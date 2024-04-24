@@ -2,8 +2,8 @@
 
 import {ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from "react"
 
-import { getLastMusicInformation } from "@/Storage/UserLastMusic/GetLastMusicInformation"
 import { saveLastMusicInformation } from "@/Storage/UserLastMusic/saveLastMusicInformation"
+import { getLastMusicInformation } from "@/Storage/UserLastMusic/getLastMusicInformation"
 export type MusicPlayerContextProps = {
     musicPlayedTime: number,
     musicIsAlreadyPlaying: boolean,

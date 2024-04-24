@@ -25,6 +25,7 @@ export const albumSchema = z.object({
     name: z.string(),
     id: z.string().uuid(),
     artistsOwner: z.array(artistSchema),
+    description: z.string(),
     photo: z.string().url(),
     musics: z.array(musicSchema),
 });
@@ -32,6 +33,8 @@ export const albumSchema = z.object({
 const getAlbumSuccessResponse = z.object({
     album: albumSchema,
 });
+
+type AlbumInformationTypes = z.infer<typeof albumSchema>
 
  export async function getAlbum(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().get(
@@ -56,6 +59,10 @@ const getAlbumSuccessResponse = z.object({
                     id,
                 },
                 select: {
+                    name: true,
+                    id: true,
+                    photo: true,
+                    description:true,
                     musics: {
                         select: {
                             name: true,
@@ -70,15 +77,14 @@ const getAlbumSuccessResponse = z.object({
                             url: true,
                         },
                     },
-                    name: true,
-                    id: true,
+                    
                     artists: {
                         select: {
                             name: true,
                             id: true,
                         },
                     },
-                    photo: true,
+                  
                 },
             });
 
@@ -86,9 +92,10 @@ const getAlbumSuccessResponse = z.object({
                 throw new BadRequest("Can't find album");
             }
 
-            const albumInformation = {
+            const albumInformation : AlbumInformationTypes = {
                 name: album.name,
                 id: album.id,
+                description: album.description,
                 artistsOwner: album.artists,
                 photo: album.photo,
                 musics: album.musics,

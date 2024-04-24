@@ -48,7 +48,7 @@ export default async function Home() {
           <div className="grid grid-cols-3 gap-6 mt-4">
             {
               albums.map(album => (
-                <div className="flex items-center justify-center bg-white/5 rounded group overflow-hidden hover:bg-white/15 transition-colors pr-3">
+                <div key={album.id} className="flex items-center justify-center bg-white/5 rounded group overflow-hidden hover:bg-white/15 transition-colors pr-3">
                   <Link
                     href={`/album/${album.id}`}
                     key={album.id}
@@ -58,8 +58,8 @@ export default async function Home() {
                     <Image
                       alt="capa do album hero and vilans do artista metro bomming"
                       src={album.photo}
-                      objectFit="cover"
-                      className="h-full"
+                      
+                      className="h-full object-cover"
                       width={80}
                       height={80}
                     />

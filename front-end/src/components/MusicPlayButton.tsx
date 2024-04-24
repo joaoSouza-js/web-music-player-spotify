@@ -32,3 +32,5 @@ export const MusicPlayButton = forwardRef<HTMLButtonElement, MusicPlayButtonProp
         </button>
     )
 })
+
+MusicPlayButton.displayName = "MusicPlayButton"

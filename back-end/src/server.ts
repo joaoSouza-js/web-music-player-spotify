@@ -31,8 +31,8 @@ app.register(fastifySwagger, {
         consumes: ["application/json"],
         produces: ["application/json"],
         info: {
-            title: "pass-in",
-            description: "Epecificações  da Api para o back-end da api pass-in",
+            title: "web player",
+            description: "Epecificações  da Api para o back-end de um web player",
             version: "1.0.0",
         },
     },
