@@ -1,20 +1,23 @@
-# web  music player 
+# Web  music player 
 
 Um  "clone" da interface e principais funcionalidades do  spotify
 
-![image](https://github.com/joaoSouza-js/web-music-player-spotify/assets/84108989/460b4b0e-3e20-46e4-9b25-3c7cc86ae732)
+## ligue o seu áudio !!! 
+  
+https://github.com/joaoSouza-js/web-music-player-spotify/assets/84108989/59f73232-5d64-4190-b185-1e06e452d470
 
-## requesitos
-### requesitos funcionais
+
+## Requesitos
+### Requesitos funcionais
 - [x] deve ser possível  reproduzir um audio 
 
-### requesitos não funcionais
+### Requesitos não funcionais
 
 - [x] utilizar  o supabase  para   salvar audios
 - [x] utilizar o supabase para  banco de dados
 - [x] utilizar web worker para streaming de dados
 
-## front-end
+## Front-end
 
 ![image](https://github.com/joaoSouza-js/web-music-player-spotify/assets/84108989/460b4b0e-3e20-46e4-9b25-3c7cc86ae732)
 
