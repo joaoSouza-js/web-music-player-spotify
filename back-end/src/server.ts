@@ -16,6 +16,7 @@ import { getMusics } from "./routes/getMusics";
 import { getArtists } from "./routes/getArtists";
 import { errorHandler } from "./_erros/ErroHandler";
 import { getMusic } from "./routes/getMusic";
+import { getArtistSongs } from "./routes/getArtistSong";
 
 const app = fastify();
 
@@ -49,6 +50,7 @@ app.register(getArtist);
 app.register(getMusics);
 app.register(getArtists);
 app.register(getMusic)
+app.register(getArtistSongs)
 
 app.setErrorHandler(errorHandler)
 

@@ -1,3 +1,4 @@
+import { AlbumCard } from "@/components/AlbumCard";
 import { Avatar } from "@/components/Avatar";
 import { fetchAlbums } from "@/controller/albums/getAlbums";
 import { fetchSingleAlbum } from "@/controller/albums/getSingleAlbum";
@@ -24,26 +25,11 @@ export default async function SearchArtists({ params: {search} }: SearchArtistsP
     return (
         <div className="flex gap-3 flex-wrap mt-4">
             {albums.map((artist) => (
-                <div 
-                    className="group p-2 rounded-md hover:bg-white/10"
+                <AlbumCard
                     key={artist.id}
-                >
-                    <div>
-                        <Avatar
-                            alt={`foto do artista ${artist.name}`}
-                            src={artist.photo}
-                            size="extraLarge"
-                        />
-                    </div>
-                    <div className="space-y-1 w-full   ">
-                        <strong className="font-semibold text-left ">{artist.name}</strong>
-                        <span className="text-zinc-400 block text-xs text-left">
-                            Artista
-                        </span>
-
-                    </div>
-
-                </div>
+                    album={artist}
+                    avatarSize="extraLarge"
+                />
             ))}
         </div>
     )

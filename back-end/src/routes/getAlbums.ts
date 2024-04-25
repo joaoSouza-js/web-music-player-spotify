@@ -9,14 +9,24 @@ const getAlbumsQueryParams = z.object({
     page: z.coerce.number().default(1),
 });
 
+const artistSchema = z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+})
+
+
 const albumSchema = z.object({
     id: z.string().uuid(), // Enforces UUID format for album ID (optional)
     name: z.string(),
-    photo: z.string().url(),
+    photo: z.string().url(), 
     description: z.string().nullable(),
+    artistsOwner: z.array(artistSchema),
 });
 
+
 const albums = z.array(albumSchema);
+
+type Albums = z.infer<typeof albums>;
 
 const getAlbumsSuccessResponse = z.object({
     albums: albums,
@@ -33,7 +43,7 @@ export async function getAlbums(app: FastifyInstance) {
                 tags: ["Album"],
                 querystring: getAlbumsQueryParams,
                 response: {
-                    200: getAlbumsSuccessResponse,
+                    
                 }
             },
         },
@@ -42,13 +52,38 @@ export async function getAlbums(app: FastifyInstance) {
             const { limit, page, search } = request.query;
            
             const albums = await prisma.album.findMany({
-                where:  search ? { name: { contains: search } } : {},
+                where:  search ? { name: { contains: search, mode:"insensitive" } } : {},
                 take: limit,
                 skip: (page -1) * limit,
+                select: {
+                    id: true,
+                    name: true,
+                    photo: true,
+                    artists: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
             });
 
+            const albumInformation = albums.map((album) => {
+                return {
+                    id: album.id,
+                    name: album.name,
+                    photo: album.photo,
+                    artistsOwner: album.artists.map((artist) => {
+                        return {
+                            id: artist.id,
+                            name: artist.name
+                        }
+                    })
+                }
+            })
+
             return reply.code(200).send({
-                albums,
+                albums: albumInformation
             });
         }
     );

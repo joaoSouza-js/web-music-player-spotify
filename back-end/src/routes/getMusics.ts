@@ -43,7 +43,7 @@ export async function getMusics(app: FastifyInstance) {
         async (request, reply) => {
             const { limit, page, search } = request.query;
             const musics = await prisma.music.findMany({
-                where: search ? { name: { contains: search } } : {},
+                where: search ? { name: { contains: search,mode: "insensitive" } } : {},
                 take: limit,
                 skip:(page - 1) * limit,
                 select: {

@@ -1,29 +1,18 @@
+import { AlbumCard } from "@/components/AlbumCard";
+import { ArtistCard } from "@/components/ArtistCard";
 import { Avatar } from "@/components/Avatar";
+import { MusicPlayButton } from "@/components/MusicPlayButton";
+import { PlayArtistMusicButtonWrapper } from "@/components/PlayArtistMusicsButtonWrapper.";
 import { PlayMusicLi } from "@/components/search/PlayMusicLi";
 import { fetchAlbums } from "@/controller/albums/getAlbums";
 import { fetchArtistSongs } from "@/controller/artists/getArtistSongs";
 import { fetchArtists } from "@/controller/artists/getArtists";
-import { api } from "@/service/axios";
-import { Play } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+
 
 type SearchResultProps = {
     params: {
         search: string;
     };
-};
-
-type MusicsResponse = {
-    musics: MUSIC_DTO[];
-};
-
-type ArtistsResponse = {
-    artists: ARTIST_DTO[];
-};
-
-type AlbumsResponse = {
-    albums: ALBUM_DTO[];
 };
 
 export default async function SearchResult({
@@ -61,8 +50,6 @@ export default async function SearchResult({
         topArtistsSongs = artistSongs
     }
 
-
-
     return (
         <div className="mt-4">
             {
@@ -70,22 +57,26 @@ export default async function SearchResult({
                     <section className="flex ">
                         <div className="w-[60%] ">
                             <strong className="text-xl">Melhor Resultado</strong>
-                            <section className="p-4 mt-4 h-52 bg-zinc-900 rounded-md group hover:bg-white/5">
-                                <Avatar
-                                    src={topArtist.photo}
+                            <section className="p-4 mt-4 min-h-[208px] flex items-end justify-between bg-zinc-900 rounded-md group hover:bg-white/5">
+                                <div>
+                                    <Avatar
+                                        src={topArtist.photo}
 
-                                />
-                                <div className="space-y-1 w-full mt-2  ">
-                                    <strong className="font-semibold text-left text-2xl ">{topArtist.name}</strong>
-                                    <span className="text-zinc-400 block text-sm text-left">
-                                        Artista
-                                    </span>
+                                    />
+                                    <div className="space-y-1 w-full mt-2  ">
+                                        <strong className="font-semibold text-left text-2xl ">{topArtist.name}</strong>
+                                        <span className="text-zinc-400 block text-sm text-left">
+                                            Artista
+                                        </span>
+
+                                    </div>
 
                                 </div>
-
+                                <PlayArtistMusicButtonWrapper asChild artistId={topArtist.id}>
+                                    <MusicPlayButton hasLeftDistance={false} />
+                                </PlayArtistMusicButtonWrapper>
 
                             </section>
-
                         </div>
                         <div className="flex-1">
                             <strong className="text-xl">Melhores sons</strong>
@@ -113,26 +104,10 @@ export default async function SearchResult({
                 <div className="flex gap-2 mt-1">
 
                     {artists.map(artist => (
-                        <div 
+                        <ArtistCard
                             key={artist.id}
-                            className="group p-2 rounded-md hover:bg-white/10"
-                            >
-                            <div>
-                                <Avatar
-                                    alt={`foto do artista ${artist.name}`}
-                                    src={artist.photo}
-                                    size="large"
-                                />
-                            </div>
-                            <div className="space-y-1 w-full mt-1   ">
-                                <strong className="font-semibold text-left ">{artist.name}</strong>
-                                <span className="text-zinc-400 block text-xs text-left">
-                                    Artista
-                                </span>
-
-                            </div>
-
-                        </div>
+                            artist={artist}
+                        />
 
                     ))}
 
@@ -144,28 +119,11 @@ export default async function SearchResult({
                 <div className="flex gap-2 mt-1">
 
                     {albums.map(album => (
-                        <div 
+                        <AlbumCard
+                            avatarSize="large"
                             key={album.id}
-                            className="group p-2 rounded-md hover:bg-white/10"
-                        >
-                            <div>
-                                <Avatar
-                                    isRounded={false}
-                                    alt={`foto do artista ${album.name}`}
-                                    src={album.photo}
-                                    size="large"
-                                />
-                            </div>
-                            <div className="space-y-1 w-32 mt-2   ">
-                                <strong className="font-semibold text-left ">{album.name}</strong>
-                                <span className="text-zinc-400 block text-xs text-left text-wrap">
-                                    {album.artistsOwner[0]?.name}
-                                </span>
-
-                            </div>
-
-                        </div>
-
+                            album={album}
+                        />
                     ))}
 
                 </div>

@@ -24,6 +24,8 @@ const AvatarStyles =  tv({
 
 type AvatarProps =  VariantProps<typeof AvatarStyles> & ComponentProps<"img">
 
+export type avatarSize = keyof typeof AvatarStyles.variants.size
+
 export const Avatar = forwardRef<HTMLImageElement, AvatarProps>((props, ref) => {
     const {size="medium",isRounded=true} = props
     return (

@@ -1,17 +1,18 @@
 import Link from "next/link";
-import {  Play } from "lucide-react"
+import { Play } from "lucide-react"
 import Image from "next/image";
 import { handleGreetingMessage } from "@/utils/greetingMessage";
 import { shortDescription } from "@/utils/shortDescription";
-import { MusicPlayerAlbum } from "@/components/MusicPlayerAlbum";
 import { HeaderNavigation } from "@/components/HeaderNavigation";
 import { playsRecommendForUser } from "@/utils/playsRecommendForUser";
 import { fetchAlbums } from "@/controller/albums/getAlbums";
+import { MusicPlayButton } from "@/components/MusicPlayButton";
+import { PlayMusicAlbumButtonWrapper } from "@/components/PlayMusicAlbumButtonWrapper";
 
 export default async function Home() {
-  const albums  = await fetchAlbums({
-      page: 1,
-      limit: 6
+  const albums = await fetchAlbums({
+    page: 1,
+    limit: 6
   })
 
   const greetingMessage = handleGreetingMessage()
@@ -33,13 +34,14 @@ export default async function Home() {
                   <Link
                     href={`/album/${album.id}`}
                     key={album.id}
+                    prefetch={true}
 
                     className="h-full rounded group relative  flex overflow-hidden gap-3  items-center "
                   >
                     <Image
                       alt="capa do album hero and vilans do artista metro bomming"
                       src={album.photo}
-                      
+
                       className="h-full object-cover"
                       width={80}
                       height={80}
@@ -50,7 +52,13 @@ export default async function Home() {
 
 
                   </Link>
-                  <MusicPlayerAlbum albumId={album.id} />
+                  <PlayMusicAlbumButtonWrapper
+                    asChild
+                    albumId={album.id}
+                  >
+
+                    <MusicPlayButton />
+                  </PlayMusicAlbumButtonWrapper>
 
                 </div>
               ))

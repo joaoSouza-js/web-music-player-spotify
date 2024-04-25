@@ -76,11 +76,11 @@ export function Footer() {
                     <div>
                         {currentMusic?.artists?.map(artist => (
                             <Link
-                                href={"*"}
+                                href={`/artist/${artist.id}`}
                                 key={artist.id}
                                 className="text-xs text-zinc-300 hover:underline hover:text-zinc-100"
                             >
-                                {artist.name}
+                                {artist.name} 
                             </Link>
 
 

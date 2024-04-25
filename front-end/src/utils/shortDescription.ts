@@ -5,6 +5,9 @@ type shortDescription = {
 }
 
 export function shortDescription({description,concat="...",maxChar=38}: shortDescription) {
-    const descriptionFormatted = description.slice(0, maxChar).concat(concat)
-    return descriptionFormatted
+    const descriptionFormatted = description.slice(0, maxChar)
+    if (descriptionFormatted.length < maxChar) {
+        return descriptionFormatted 
+    }
+    return descriptionFormatted.concat(concat)
   }

@@ -39,7 +39,7 @@ export async function getArtists(app: FastifyInstance) {
             const { limit, page, search } = request.query;
 
             const artists = await prisma.artist.findMany({
-                where: search ? { name: { contains: search } } : {},
+                where: search ? { name: { contains: search,mode: "insensitive" } } : {},
                 select: {
                     name: true,
                     photo: true,

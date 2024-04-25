@@ -37,7 +37,7 @@ export function PlayMusicLi({name,photo,url,artists,id}:PlayMusicLiProps){
                     artists?.map((artist) => (
                         <Link
                             key={artist.id}
-                            href={"*"}
+                            href={`/artist/${artist.id}`}
                             className="text-xs text-zinc-300 hover:underline hover:text-zinc-100"
                         >
                             {artist.name}

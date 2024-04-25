@@ -1,3 +1,4 @@
+import { ArtistCard } from "@/components/ArtistCard";
 import { Avatar } from "@/components/Avatar";
 import { fetchArtists } from "@/controller/artists/getArtists";
 import { api } from "@/service/axios";
@@ -23,26 +24,11 @@ export default async function SearchArtists({ params }: SearchArtistsProps) {
     return (
         <div className="flex gap-3 flex-wrap mt-4">
             {artists.map((artist) => (
-                <div 
-                    className="group p-2 rounded-md hover:bg-white/10"
+                <ArtistCard
                     key={artist.id}
-                >
-                    <div>
-                        <Avatar
-                            alt={`foto do artista ${artist.name}`}
-                            src={artist.photo}
-                            size="extraLarge"
-                        />
-                    </div>
-                    <div className="space-y-1 w-full   ">
-                        <strong className="font-semibold text-left ">{artist.name}</strong>
-                        <span className="text-zinc-400 block text-xs text-left">
-                            Artista
-                        </span>
-
-                    </div>
-
-                </div>
+                    artist={artist}
+                    avatarSize="extraLarge"
+                />
             ))}
         </div>
     )
