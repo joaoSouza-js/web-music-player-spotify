@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-br">
+    <html lang="pt-br" className='scrollbar-thumb-sky-700 scrollbar-track-sky-300'>
       <body
         className={`${inter.variable} font-sans bg-zinc-900 text-zinc-50`}
       >

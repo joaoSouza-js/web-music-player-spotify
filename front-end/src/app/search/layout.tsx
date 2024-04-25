@@ -1,5 +1,7 @@
 'use client'
 
+import { getLastUserSearch } from "@/Storage/UserLastMusic/getLastUserSearch"
+import { saveLastUserSearch } from "@/Storage/UserLastMusic/saveLastUserSearch"
 import { HeaderNavigation } from "@/components/HeaderNavigation"
 import { Input } from "@/components/Input"
 import { Search } from "lucide-react"
@@ -26,7 +28,9 @@ export default function SearchLayout({ children }: SearchLayoutProps) {
 
     function handleInputTextChange(event: ChangeEvent<HTMLInputElement>) {
         const content = event.target.value
+        saveLastUserSearch(content)
         setSearch(content)
+
 
     }
 
